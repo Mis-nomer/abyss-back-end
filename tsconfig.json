@@ -3,28 +3,45 @@
     // Language feats
     "allowSyntheticDefaultImports": true,
     "declaration": false,
-    "target": "es6",
-    "module": "commonjs",
+    "target": "es2017",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
+
     // Type checking
     "noImplicitAny": false,
     "strict": true,
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
+
     // Output control
     "removeComments": true,
     "outDir": "./build",
     "preserveConstEnums": true,
     "sourceMap": true,
+
     // Misc
     "forceConsistentCasingInFileNames": true,
     "rootDir": ".",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    // Import
+    "baseUrl": ".",
+    "paths": {
+      "@controllers/*": ["src/controllers/*"],
+      "@routes/*": ["src/routes/*"],
+      "@common/*": ["src/common/*"],
+      "@utils/*": ["src/utils/*"],
+      "@lib/*": ["src/lib/*"],
+      "@plugins/*": ["src/plugins/*"]
+    }
   },
   "extends": "fastify-tsconfig",
-  "include": ["src/**/*.ts"],
-  "exclude": [".eslintrc.js", "node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }
