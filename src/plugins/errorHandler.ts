@@ -1,5 +1,8 @@
-import { HTTP_MESSAGE, HTTP_STATUS } from '@common/types';
+import { HTTP_CODE, HTTP_MESSAGE, HTTP_STATUS } from '@common/types';
+import filepath from '@libs/filepath';
+import { logger } from '@libs/logger';
 import Elysia from 'elysia';
+import R from 'remeda';
 
 //? Remember to type-safe this
 export const genericErrorHandler = () =>
@@ -14,7 +17,7 @@ export const genericErrorHandler = () =>
     };
 
     const messages = {
-      VALIDATION: `${HTTP_MESSAGE.BAD_REQUEST}: ${error.validator.Errors(error.value).First().message} for ${error.validator.Errors(error.value).First().path} (got ${error.validator.Errors(error.value).First().value})`,
+      VALIDATION: HTTP_MESSAGE.BAD_REQUEST,
       NOT_FOUND: HTTP_MESSAGE.NOT_FOUND,
       PARSE: HTTP_MESSAGE.PARSE_ERROR,
       INTERNAL_SERVER_ERROR: HTTP_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -22,13 +25,20 @@ export const genericErrorHandler = () =>
       default: HTTP_MESSAGE.UNKNOWN,
     };
 
-    const status = statusCodes[code] || statusCodes['default'];
-    const message = messages[code] || messages['default'];
+    let statusCode = statusCodes[code] || statusCodes['default'];
+    let message = messages[code] || messages['default'];
 
-    set.status = status;
+    if (code >= 11000) {
+      statusCode = HTTP_STATUS.INTERNAL_SERVER_ERROR;
+      message = error.message ?? HTTP_MESSAGE.INTERNAL_SERVER_ERROR;
+    }
+
+    set.status = statusCode;
+
+    logger.error(`[${filepath.current}] - ${message}`);
 
     return {
-      code: status,
+      code: statusCode,
       message,
     };
   });

@@ -1,7 +1,4 @@
 import { LoggerColorEnum, LoggerTypeEnum } from '@common/enums';
-import * as color from 'colorette';
-import fs from 'fs/promises';
-import path from 'path';
 import { ROARR, Roarr } from 'roarr';
 
 const toAsiaTimeZone = (time: number) => {
@@ -29,11 +26,13 @@ const init = () => {
 
 ROARR.write = (msg) => {
   const { context, message } = JSON.parse(msg);
-  const withColor = color[context.logColor];
 
   if (process.env.ENV_TYPE === 'PROD') {
   } else {
-    console.log(withColor(`${context.localTime}, ${context?.logName}: ${message}`));
+    import('colorette').then((module) => {
+      const withColor = module[context.logColor];
+      console.log(withColor(`${context.localTime}, ${context?.logName}: ${message}`));
+    });
   }
 };
 

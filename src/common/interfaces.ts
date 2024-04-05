@@ -22,9 +22,10 @@ export interface IRoom {
 }
 
 export interface IUser {
-  _id: ObjectId;
-  username?: String;
+  uuid: String;
+  username: String;
   email?: String;
+
   is_verified: Boolean;
   is_blacklisted: Boolean;
 }

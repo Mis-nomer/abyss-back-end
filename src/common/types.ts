@@ -48,6 +48,11 @@ export const HTTP_MESSAGE = {
     LOGIN_FAIL: 'Login failed',
     LOGOUT_SUCCESS: 'Logout was successful',
     LOGOUT_FAIL: 'Logout failed',
+    ALREADY_EXIST: 'Account already exists',
+  },
+
+  ROOM: {
+    RESTRICT_NOT_VERIFIED: 'A non-verified user cannot create more than 3 rooms',
   },
 };
 
@@ -79,11 +84,13 @@ export const HTTP_CODE = {
     LOGIN_FAIL: 10024,
     LOGOUT_SUCCESS: 10025,
     LOGOUT_FAIL: 10026,
+    ALREADY_EXIST: 10029,
   },
 
   ROOM: {
     CREATE_SUCCESS: 10027,
     CREATE_FAIL: 10028,
+    RESTRICT_NOT_VERIFIED: 10030,
   },
 };
 

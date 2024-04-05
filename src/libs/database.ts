@@ -1,4 +1,4 @@
-import filepath from '@utils/filepath';
+import filepath from '@libs/filepath';
 import mongoose from 'mongoose';
 
 import { logger } from './logger';

@@ -34,9 +34,10 @@
       "@common/*": ["src/common/*"],
       "@routes/*": ["src/routes/*"],
       "@models/*": ["src/models/*"],
-      "@utils/*": ["src/utils/*"],
+      "@services/*": ["src/services/*"],
       "@libs/*": ["src/libs/*"],
-      "@plugins/*": ["src/plugins/*"]
+      "@plugins/*": ["src/plugins/*"],
+      "@schemas/*": ["src/schemas/*"]
     }
   },
   "include": ["src"],

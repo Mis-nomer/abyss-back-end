@@ -42,7 +42,7 @@ const RoomSchema = new Schema<IRoom, Model<IRoom>>(
 RoomSchema.index(
   { createdAt: 1 },
   {
-    expireAfterSeconds: 30,
+    expires: 30,
     partialFilterExpression: {
       room_burn: true,
       $expr: { $eq: [{ $size: '$room_sessions' }, '$burn_after'] },
@@ -50,9 +50,13 @@ RoomSchema.index(
   }
 );
 
-RoomSchema.pre('save', function () {
+RoomSchema.pre('save', async function (next) {
   this.room_occupants.push(this.room_created_by);
   this.room_sessions.push(new Date());
+
+  next();
 });
 
-export default model('Room', RoomSchema);
+const RoomModel = model('Room', RoomSchema);
+
+export default RoomModel;
