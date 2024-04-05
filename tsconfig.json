@@ -30,13 +30,12 @@
     // Import
     "baseUrl": ".",
     "paths": {
-      "@controllers/*": ["src/controllers/*"],
       "@common/*": ["src/common/*"],
-      "@routes/*": ["src/routes/*"],
-      "@models/*": ["src/models/*"],
-      "@services/*": ["src/services/*"],
       "@libs/*": ["src/libs/*"],
+      "@models/*": ["src/models/*"],
       "@plugins/*": ["src/plugins/*"],
+      "@routes/*": ["src/routes/*"],
+      "@services/*": ["src/services/*"],
       "@schemas/*": ["src/schemas/*"]
     }
   },

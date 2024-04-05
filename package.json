@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky || true",
     "dev": "NODE_ENV=development bun --watch src/server.ts",
-    "prod": "bun build src/server.ts --outdir dist --splitting",
+    "prod": "bun build src/server.ts --outdir dist --minify",
     "start": "NODE_ENV=production bun dist/server.js"
   },
   "keywords": [],

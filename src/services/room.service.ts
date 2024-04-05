@@ -1,13 +1,10 @@
 import { IRoom } from '@common/interfaces';
 import { HTTP_CODE, HTTP_MESSAGE, HTTP_RESPONSE, HTTP_STATUS } from '@common/types';
-import hash from '@libs/hash';
 import RoomModel from '@models/room.model';
 import UserModel from '@models/user.model';
 
 export default {
   create: async (data: Partial<IRoom>): Promise<HTTP_RESPONSE> => {
-    if (data.room_key) data.room_key = hash(data.room_key.valueOf());
-
     const newRoom = new RoomModel(data);
     const validateResult = newRoom.validateSync();
 

@@ -1,12 +1,11 @@
 import { IUser } from '@common/interfaces';
 import { HTTP_CODE, HTTP_MESSAGE, HTTP_RESPONSE } from '@common/types';
-import hash from '@libs/hash';
 import UserModel from '@models/user.model';
 
 export default {
   create: async (data: Partial<IUser>): Promise<HTTP_RESPONSE> => {
     if (data.username) {
-      data.uuid = hash(data.username.valueOf());
+      data.uuid = data.username.valueOf();
     }
 
     const newUser = new UserModel(data);

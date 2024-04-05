@@ -3,6 +3,8 @@
 import connectDatabase from '@libs/database';
 import filepath from '@libs/filepath';
 import { logger } from '@libs/logger';
+import roomRoute from '@routes/room.route';
+import userRoute from '@routes/user.route';
 import { Elysia, t } from 'elysia';
 
 import cors from '@elysiajs/cors';
@@ -17,8 +19,8 @@ const app = new Elysia({ prefix: PREFIX_ROUTE + PREFIX_VER })
       origin: true,
     })
   )
-  .use(import('@routes/room.route'))
-  .use(import('@routes/user.route'))
+  .use(roomRoute)
+  .use(userRoute)
   // Default entry
   .get('/', () => ({ status: 'ok' }), {
     response: t.Object({
