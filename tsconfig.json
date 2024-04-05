@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    // Language feats
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
+    "target": "es2017",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+
+    // Type checking
+    "noImplicitAny": false,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+
+    // Output control
+    "removeComments": true,
+    "outDir": "./build",
+    "preserveConstEnums": true,
+    "sourceMap": true,
+
+    // Misc
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": ".",
+    "resolveJsonModule": true,
+
+    // Import
+    "baseUrl": ".",
+    "paths": {
+      "@controllers/*": ["src/controllers/*"],
+      "@common/*": ["src/common/*"],
+      "@routes/*": ["src/routes/*"],
+      "@models/*": ["src/models/*"],
+      "@utils/*": ["src/utils/*"],
+      "@libs/*": ["src/libs/*"],
+      "@plugins/*": ["src/plugins/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

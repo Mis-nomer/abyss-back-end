@@ -1,0 +1,50 @@
+{
+  "name": "abyss-back-end",
+  "version": "0.0.2",
+  "description": "A privacy-first messaging application",
+  "main": "src/server.ts",
+  "scripts": {
+    "prepare": "husky || true",
+    "dev": "NODE_ENV=development bun --watch src/server.ts",
+    "prod": "bun build src/server.ts --outdir dist --splitting",
+    "start": "NODE_ENV=production bun dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@elysiajs/cors": "^1.0.2",
+    "@elysiajs/eden": "^1.0.8",
+    "colorette": "^2.0.20",
+    "elysia": "^1.0.10",
+    "elysia-autoroutes": "^0.5.0",
+    "mongoose": "^8.2.4",
+    "obscenity": "^0.2.1",
+    "roarr": "^7.21.1"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/node": "^20.11.28",
+    "eslint": "^8.57.0",
+    "eslint-config-love": "^43.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2",
+    "winston": "^3.12.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier — config .prettierrc 'src/**/*.ts' — write",
+      "eslint . — ext .ts — fix"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
