@@ -6,7 +6,7 @@ export const HTTP_STATUS = {
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
-  PARSE_ERROR: 422,
+  PARSE: 422,
   UNKNOWN: 520,
 };
 
@@ -26,7 +26,7 @@ export const HTTP_MESSAGE = {
   UNAUTHORIZED: 'Unauthorized',
   FORBIDDEN: 'Forbidden',
   NOT_FOUND: 'Not found',
-  INTERNAL_SERVER_ERROR: 'Internal server error',
+  INTERNAL_SERVER_ERROR: 'Internal server error, please try again later.',
   UNKNOWN: 'Unexpected error',
   INVALID_COOKIE_SIGNATURE: 'Invalid cookie signature',
   PARSE_ERROR: 'Unprocessable Content',
@@ -48,7 +48,7 @@ export const HTTP_MESSAGE = {
     LOGIN_FAIL: 'Login failed',
     LOGOUT_SUCCESS: 'Logout was successful',
     LOGOUT_FAIL: 'Logout failed',
-    ALREADY_EXIST: 'Account already exists',
+    DUPLICATE: 'Account already exists',
   },
 
   ROOM: {
@@ -58,44 +58,40 @@ export const HTTP_MESSAGE = {
 
 export const HTTP_CODE = {
   ...HTTP_STATUS,
-  /** File */
-  FILE: {
-    REQUIRED: 10001,
-    UPLOAD_SUCCESS: 10002,
-    UPLOAD_FAIL: 10003,
-    ACCEPT_MEDIA: 10004,
-    ACCEPT_IMAGE: 10005,
-    MUST_BE_VIDEO: 10006,
-  },
-  /** Auth */
-  AUTH: {
-    INVALID_API_KEY: 10011,
-    REGISTER_SUCCESS: 10012,
-    REGISTER_FAIL: 10013,
-    LOGIN_SUCCESS: 10014,
-    FORGOT_PASSWORD_SUCCESS: 10016,
-    FORGOT_PASSWORD_FAIL: 10017,
-    VERIFY_CODE_SUCCESS: 10018,
-    VERIFY_CODE_FAIL: 10019,
-    VERIFIED: 10020,
-    NOT_VERIFIED: 10021,
-    RESEND_VERIFY_CODE_SUCCESS: 10022,
-    RESEND_VERIFY_CODE_FAIL: 10023,
-    LOGIN_FAIL: 10024,
-    LOGOUT_SUCCESS: 10025,
-    LOGOUT_FAIL: 10026,
-    ALREADY_EXIST: 10029,
-  },
+  INVALID_API_KEY: 10011,
+  REGISTER_SUCCESS: 10012,
+  REGISTER_FAIL: 10013,
+  LOGIN_SUCCESS: 10014,
+  FORGOT_PASSWORD_SUCCESS: 10016,
+  FORGOT_PASSWORD_FAIL: 10017,
+  VERIFY_CODE_SUCCESS: 10018,
+  VERIFY_CODE_FAIL: 10019,
+  VERIFIED: 10020,
+  NOT_VERIFIED: 10021,
+  RESEND_VERIFY_CODE_SUCCESS: 10022,
+  RESEND_VERIFY_CODE_FAIL: 10023,
+  LOGIN_FAIL: 10024,
+  LOGOUT_SUCCESS: 10025,
+  LOGOUT_FAIL: 10026,
 
-  ROOM: {
-    CREATE_SUCCESS: 10027,
-    CREATE_FAIL: 10028,
-    RESTRICT_NOT_VERIFIED: 10030,
-  },
+  DUPLICATE: 10027,
+  RESTRICT_NOT_VERIFIED: 10028,
+  INVALID_COOKIE_SIGNATURE: 10029,
+  CREATE_FAIL: 10030,
+  ROOM_CREATED: 10031,
 };
 
 export interface HTTP_RESPONSE {
-  message: string;
-  code: number;
+  message: string | string[];
+  code: string | number;
   data?: Record<string, any> | any[];
+}
+
+export class HTTP_ERROR extends Error {
+  code: string;
+
+  constructor(code: string, message?: string) {
+    super(HTTP_MESSAGE[code] ?? message);
+    this.code = code;
+  }
 }

@@ -1,5 +1,5 @@
 import { IUser } from '@common/interfaces';
-import { HTTP_CODE, HTTP_MESSAGE, HTTP_RESPONSE } from '@common/types';
+import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE, HTTP_STATUS } from '@common/types';
 import UserModel from '@models/user.model';
 
 export default {
@@ -9,15 +9,6 @@ export default {
     }
 
     const newUser = new UserModel(data);
-    const validateResult = newUser.validateSync();
-
-    // Data Validation
-    if (validateResult?.errors) {
-      return {
-        code: HTTP_CODE.AUTH.REGISTER_FAIL,
-        message: validateResult?.message,
-      };
-    }
 
     // Duplicate Check
     const isFound = await UserModel.findOne({
@@ -25,23 +16,17 @@ export default {
     });
 
     if (isFound) {
-      return {
-        code: HTTP_CODE.AUTH.ALREADY_EXIST,
-        message: HTTP_MESSAGE.AUTH.ALREADY_EXIST,
-      };
+      throw new HTTP_ERROR('DUPLICATE');
     }
 
     const result = await newUser.save();
 
     if (!result) {
-      return {
-        code: HTTP_CODE.INTERNAL_SERVER_ERROR,
-        message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR,
-      };
+      throw new HTTP_ERROR('INTERNAL_SERVER_ERROR');
     }
 
     return {
-      code: HTTP_CODE.AUTH.REGISTER_SUCCESS,
+      code: HTTP_CODE.REGISTER_SUCCESS,
       message: HTTP_MESSAGE.CREATE_SUCCESS,
     };
   },

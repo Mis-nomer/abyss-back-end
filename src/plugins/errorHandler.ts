@@ -1,44 +1,70 @@
-import { HTTP_CODE, HTTP_MESSAGE, HTTP_STATUS } from '@common/types';
-import filepath from '@libs/filepath';
-import { logger } from '@libs/logger';
-import Elysia from 'elysia';
-import R from 'remeda';
+import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE, HTTP_STATUS } from '@common/types';
+import Elysia, { ErrorHandler } from 'elysia';
 
-//? Remember to type-safe this
-export const genericErrorHandler = () =>
-  new Elysia().decorate('errorHandle', (code, error, set) => {
-    const statusCodes = {
-      VALIDATION: HTTP_STATUS.BAD_REQUEST,
-      NOT_FOUND: HTTP_STATUS.NOT_FOUND,
-      PARSE: HTTP_STATUS.PARSE_ERROR,
-      INTERNAL_SERVER_ERROR: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      INVALID_COOKIE_SIGNATURE: HTTP_STATUS.BAD_REQUEST,
-      default: HTTP_STATUS.UNKNOWN,
-    };
+const handleValidationError = (error) => {
+  const messages = error.all.map(
+    ({ path, value, message }) => `${message} for ${(path ?? '').substring(1)}, found ${value}`
+  );
 
-    const messages = {
-      VALIDATION: HTTP_MESSAGE.BAD_REQUEST,
-      NOT_FOUND: HTTP_MESSAGE.NOT_FOUND,
-      PARSE: HTTP_MESSAGE.PARSE_ERROR,
-      INTERNAL_SERVER_ERROR: HTTP_MESSAGE.INTERNAL_SERVER_ERROR,
-      INVALID_COOKIE_SIGNATURE: HTTP_MESSAGE.INVALID_COOKIE_SIGNATURE,
-      default: HTTP_MESSAGE.UNKNOWN,
-    };
+  return {
+    code: HTTP_CODE.BAD_REQUEST,
+    message: messages,
+  };
+};
 
-    let statusCode = statusCodes[code] || statusCodes['default'];
-    let message = messages[code] || messages['default'];
+const handleCustomError = (error: HTTP_ERROR) => {
+  switch (error.code) {
+    case 'DUPLICATE':
+    case 'RESTRICT_NOT_VERIFIED':
+      return {
+        status: HTTP_STATUS.BAD_REQUEST,
+        code: HTTP_CODE[error.code],
+        message: error.message || HTTP_MESSAGE.AUTH.DUPLICATE,
+      };
 
-    if (code >= 11000) {
-      statusCode = HTTP_STATUS.INTERNAL_SERVER_ERROR;
-      message = error.message ?? HTTP_MESSAGE.INTERNAL_SERVER_ERROR;
-    }
+    default:
+      return {
+        code: HTTP_CODE.UNKNOWN,
+        message: HTTP_MESSAGE.UNKNOWN,
+      };
+  }
+};
 
-    set.status = statusCode;
+const errorHandler: ErrorHandler<{ readonly HTTP_ERROR: HTTP_ERROR }> = ({
+  code,
+  error,
+  set,
+}): HTTP_RESPONSE => {
+  switch (code) {
+    case 'VALIDATION':
+      set.status = HTTP_STATUS.BAD_REQUEST;
+      return handleValidationError(error);
 
-    logger.error(`[${filepath.current}] - ${message}`);
+    case 'INTERNAL_SERVER_ERROR':
+    case 'NOT_FOUND':
+    case 'PARSE':
+      set.status = HTTP_STATUS[code];
 
-    return {
-      code: statusCode,
-      message,
-    };
-  });
+      return {
+        code: HTTP_CODE[code],
+        message: HTTP_MESSAGE[code],
+      };
+    case 'INVALID_COOKIE_SIGNATURE':
+      set.status = HTTP_CODE.BAD_REQUEST;
+
+      return {
+        code: HTTP_CODE.INVALID_COOKIE_SIGNATURE,
+        message: HTTP_MESSAGE.INVALID_COOKIE_SIGNATURE,
+      };
+    default:
+      const { status, code: customCode, message } = handleCustomError(error as HTTP_ERROR);
+      set.status = status;
+
+      return {
+        code: customCode,
+        message,
+      };
+  }
+};
+
+export default () => new Elysia().error({ HTTP_ERROR }).decorate('errorHandler', errorHandler);
