@@ -91,7 +91,7 @@ export class HTTP_ERROR extends Error {
   code: string;
 
   constructor(code: string, message?: string) {
-    super(HTTP_MESSAGE[code] ?? message);
+    super(message || HTTP_MESSAGE[code]);
     this.code = code;
   }
 }

@@ -14,16 +14,28 @@ const handleValidationError = (error) => {
 
 const handleCustomError = (error: HTTP_ERROR) => {
   switch (error.code) {
+    case 'CREATE_FAIL':
     case 'DUPLICATE':
-    case 'RESTRICT_NOT_VERIFIED':
       return {
         status: HTTP_STATUS.BAD_REQUEST,
         code: HTTP_CODE[error.code],
         message: error.message || HTTP_MESSAGE.AUTH.DUPLICATE,
       };
-
+    case 'RESTRICT_NOT_VERIFIED':
+      return {
+        status: HTTP_STATUS.FORBIDDEN,
+        code: HTTP_CODE[error.code],
+        message: error.message || HTTP_MESSAGE.ROOM.RESTRICT_NOT_VERIFIED,
+      };
+    case 'NOT_VERIFIED':
+      return {
+        status: HTTP_STATUS.FORBIDDEN,
+        code: HTTP_CODE[error.code],
+        message: error.message || HTTP_MESSAGE.AUTH.NOT_VERIFIED,
+      };
     default:
       return {
+        status: HTTP_STATUS.UNKNOWN,
         code: HTTP_CODE.UNKNOWN,
         message: HTTP_MESSAGE.UNKNOWN,
       };

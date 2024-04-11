@@ -21,18 +21,6 @@ const app = new Elysia({ prefix: PREFIX_ROUTE + PREFIX_VER })
   )
   .use(roomRoute)
   .use(userRoute)
-  // Default entry
-  .get('/', () => ({ status: 'ok' }), {
-    response: t.Object({
-      status: t.String({
-        description: 'Default entry. Returns ok for health check',
-      }),
-    }),
-    detail: {
-      description: 'The root endpoint',
-      tags: ['App'],
-    },
-  })
   .ws('/chat', {
     body: t.String(),
     response: t.String(),

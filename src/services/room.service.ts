@@ -6,10 +6,18 @@ import UserModel from '@models/user.model';
 export default {
   create: async (data: Partial<IRoom>): Promise<HTTP_RESPONSE> => {
     const newRoom = new RoomModel(data);
+    const validationResult = newRoom.validateSync();
 
-    // Unverified User Limit
+    // Data validation
+    if (validationResult?.errors) {
+      throw new HTTP_ERROR('CREATE_FAIL', validationResult?.message);
+    }
+    // Unverified user limit
     const user = await UserModel.findById(data.room_created_by);
 
+    if (!user) {
+      // Register temp user here
+    }
     if (user && !user.is_verified) {
       const count = await RoomModel.countDocuments({ room_created_by: user._id });
 

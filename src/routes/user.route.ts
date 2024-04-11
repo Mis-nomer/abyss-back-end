@@ -1,9 +1,11 @@
 import { IUser } from '@common/interfaces';
 import { HTTP_STATUS } from '@common/types';
+import client from '@libs/redis';
 import errorHandler from '@plugins/errorHandler';
 import { createUserSchema } from '@schemas/user.schema';
 import userService from '@services/user.service';
 import Elysia from 'elysia';
+import uuid from 'uuid';
 
 import { Patterns, cron } from '@elysiajs/cron';
 
@@ -24,10 +26,17 @@ export default new Elysia({ prefix: PATH })
   .post(
     '',
     async ({ body, set }) => {
-      const result = await userService.create(body as Partial<IUser>);
+      // const result = await userService.create(body as Partial<IUser>);
+      const data = body as Partial<IUser>;
+      const isExist = await userService.findOne('', { username: data.username });
+
+      if (!isExist) {
+        client.SETEX(uuid(), 86400, JSON.stringify(data));
+      }
+
       set.status = HTTP_STATUS.CREATED;
 
-      return result;
+      return data;
     },
     createUserSchema
   );

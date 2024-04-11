@@ -22,6 +22,8 @@ export interface IRoom {
 }
 
 export interface IUser {
+  _id: ObjectId;
+
   uuid: String;
   username: String;
   email?: String;

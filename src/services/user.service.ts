@@ -1,6 +1,6 @@
 import { IUser } from '@common/interfaces';
 import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE, HTTP_STATUS } from '@common/types';
-import UserModel from '@models/user.model';
+import userModel from '@models/user.model';
 
 export default {
   create: async (data: Partial<IUser>): Promise<HTTP_RESPONSE> => {
@@ -8,10 +8,10 @@ export default {
       data.uuid = data.username.valueOf();
     }
 
-    const newUser = new UserModel(data);
+    const newUser = new userModel(data);
 
     // Duplicate Check
-    const isFound = await UserModel.findOne({
+    const isFound = await userModel.findOne({
       uuid: data.uuid,
     });
 
@@ -26,11 +26,17 @@ export default {
     }
 
     return {
+      data: result,
       code: HTTP_CODE.REGISTER_SUCCESS,
       message: HTTP_MESSAGE.CREATE_SUCCESS,
     };
   },
+  findOne: async (id: string, other?: Record<string, unknown>) => {
+    if (id) {
+      return await userModel.findById(id);
+    } else return await userModel.findOne(other);
+  },
   routineDelete: async () => {
-    return await UserModel.deleteMany({ is_verified: false });
+    return await userModel.deleteMany({ is_verified: false });
   },
 };
