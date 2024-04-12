@@ -6,11 +6,7 @@ import { genericResponse } from '.';
 export const createUserSchema: InputSchema<never> = {
   body: t.Object({
     username: t.String(),
-    email: t.Optional(
-      t.String({
-        format: 'email',
-      })
-    ),
+    uuid: t.String(),
   }),
   response: genericResponse,
 };

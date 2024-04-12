@@ -3,8 +3,8 @@
     // Language feats
     "allowSyntheticDefaultImports": true,
     "declaration": false,
-    "target": "es2017",
-    "module": "CommonJS",
+    "target": "ES6",
+    "module": "ES2020",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -20,7 +20,7 @@
     "removeComments": true,
     "outDir": "./build",
     "preserveConstEnums": true,
-    "sourceMap": true,
+    "sourceMap": false,
 
     // Misc
     "forceConsistentCasingInFileNames": true,

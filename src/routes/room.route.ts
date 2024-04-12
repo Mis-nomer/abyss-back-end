@@ -12,7 +12,7 @@ export default new Elysia({ prefix: PATH })
   .onError(({ errorHandler, ...ctx }) => errorHandler(ctx))
   .post(
     '',
-    async ({ body, set, store }) => {
+    async ({ body, set }) => {
       const result = await roomService.create(body as Partial<IRoom>);
 
       switch (result.code) {

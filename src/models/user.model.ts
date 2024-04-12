@@ -3,22 +3,19 @@ import { Model, Schema, model } from 'mongoose';
 
 const UserSchema = new Schema<IUser, Model<IUser>>({
   uuid: { type: String, required: true, unique: true },
-  username: { type: String, required: true, unique: true },
 
+  username: { type: String, required: true, unique: true },
+  password: {
+    type: String,
+    required: function () {
+      return Boolean(this.is_verified);
+    },
+  },
   email: { type: String, unique: true },
 
-  is_verified: { type: Boolean, default: false, expires: 10 },
+  is_verified: { type: Boolean, default: false },
+
   is_blacklisted: { type: Boolean, default: false },
 });
-
-// UserSchema.index(
-//   { createdAt: 1 },
-//   {
-//     expires: 10,
-//     partialFilterExpression: {
-//       is_verified: false,
-//     },
-//   }
-// );
 
 export default model('User', UserSchema);

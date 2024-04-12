@@ -26,6 +26,7 @@ export interface IUser {
 
   uuid: String;
   username: String;
+  password: String;
   email?: String;
 
   is_verified: Boolean;

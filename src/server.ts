@@ -2,25 +2,21 @@
 
 import connectDatabase from '@libs/database';
 import filepath from '@libs/filepath';
-import { logger } from '@libs/logger';
-import roomRoute from '@routes/room.route';
-import userRoute from '@routes/user.route';
+import logger from '@libs/logger';
 import { Elysia, t } from 'elysia';
 
 import cors from '@elysiajs/cors';
 
-const PREFIX_ROUTE = process.env.PREFIX_ROUTE ?? '/api';
-const PREFIX_VER = process.env.PREFIX_VERSION ?? '/v1';
-const PORT = process.env.PORT ?? 3000;
+console.log(process.env.NODE_ENV, typeof process.env.ROARR_LOG);
 
-const app = new Elysia({ prefix: PREFIX_ROUTE + PREFIX_VER })
+const app = new Elysia({ prefix: '/api' + process.env.PREFIX_VERSION })
   .use(
     cors({
       origin: true,
     })
   )
-  .use(roomRoute)
-  .use(userRoute)
+  .use(import('@routes/room.route'))
+  .use(import('@routes/user.route'))
   .ws('/chat', {
     body: t.String(),
     response: t.String(),
@@ -28,15 +24,15 @@ const app = new Elysia({ prefix: PREFIX_ROUTE + PREFIX_VER })
       ws.send(message);
     },
     open(ws) {
-      logger.info(`[${filepath.current}] - ${ws.data}`);
+      logger.info(`[${filepath(import.meta.url)}] - ${ws.data}`);
     },
   })
-  .listen(PORT);
+  .listen(process.env.SERVER_PORT ?? 3000);
 
 connectDatabase();
 
 logger.info(
-  `[${filepath.current}] - 🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
+  `[${filepath(import.meta.url)}] - 🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
 );
 
 export { app };

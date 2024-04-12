@@ -1,19 +1,16 @@
-import filepath from '@libs/filepath';
 import mongoose from 'mongoose';
 
-import { logger } from './logger';
-
-const connectionString = process.env.DATABASE;
+import logger from './logger';
 
 const connect = async () => {
   try {
-    if (!connectionString) throw new Error('Failed to connect to MongoDB');
+    if (!process.env.MONGODB_URL) throw new Error('Failed to connect to MongoDB');
 
-    await mongoose.connect(connectionString);
+    await mongoose.connect(process.env.MONGODB_URL);
 
-    logger.info(`[${filepath.current}] - Successfully connected to database`);
+    logger.info('Successfully connected to database');
   } catch (error) {
-    logger.error(`[${filepath.current}] - ${error}`);
+    logger.error((error as Error).message);
   }
 };
 
