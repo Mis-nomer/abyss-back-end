@@ -1,10 +1,15 @@
 import { IRoom } from '@common/interfaces';
-import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE, HTTP_STATUS } from '@common/types';
+import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE } from '@common/types';
 import RoomModel from '@models/room.model';
 import UserModel from '@models/user.model';
 
+type IRoomSubmit = Pick<
+  IRoom,
+  'room_name' | 'room_burn' | 'room_key' | 'burn_date' | 'burn_after' | 'room_created_by'
+>;
+
 export default {
-  create: async (data: Partial<IRoom>): Promise<HTTP_RESPONSE> => {
+  create: async (data: IRoomSubmit): Promise<HTTP_RESPONSE> => {
     const newRoom = new RoomModel(data);
     const validationResult = newRoom.validateSync();
 

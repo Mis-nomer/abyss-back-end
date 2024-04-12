@@ -1,5 +1,9 @@
 import redis from 'redis';
-import { isNonNullish, isNullish } from 'remeda';
+
+import filepath from './filepath';
+import logger from './logger';
+
+const PATH = filepath(import.meta.url, 'libs/redis.ts');
 
 export const client = redis.createClient({
   password: process.env.REDIS_PASSWORD,
@@ -9,14 +13,17 @@ export const client = redis.createClient({
   },
 });
 
-export const cache = async (key: string, getData?: () => any): Promise<any | null> => {
-  return client.GET(key).then(async (data: any) => {
-    if (isNullish(data) && isNonNullish(getData)) {
-      const newData = await getData();
+client.on('error', (err) => {
+  logger.error(`[${PATH}] - ${(err as Error).message}`);
+  client.quit();
+});
 
-      client.SET(key, JSON.stringify(newData), { EX: 24 * 60 * 60 });
-      return await getData();
-    }
-    return JSON.parse(data);
-  });
-};
+process.on('SIGINT', () => {
+  client.quit();
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  client.quit();
+  process.exit(0);
+});

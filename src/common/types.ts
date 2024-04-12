@@ -5,8 +5,9 @@ export const HTTP_STATUS = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500,
+  DUPLICATE: 409,
   PARSE: 422,
+  INTERNAL_SERVER_ERROR: 500,
   UNKNOWN: 520,
 };
 
@@ -84,7 +85,7 @@ export const HTTP_CODE = {
 export interface HTTP_RESPONSE {
   message: string | string[];
   code: string | number;
-  data?: Record<string, any> | any[];
+  data?: any;
 }
 
 export class HTTP_ERROR extends Error {

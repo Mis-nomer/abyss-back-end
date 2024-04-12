@@ -5,30 +5,32 @@ import { RoomTypeEnum } from './enums';
 export interface IRoom {
   _id: ObjectId;
 
-  room_name?: String;
-  room_key?: String;
+  room_name: string;
+  room_key?: string;
   room_type: RoomTypeEnum;
-  room_private: Boolean;
+  room_private: boolean;
 
-  room_burn: Boolean;
-  room_occupants: ObjectId[];
-  room_whitelist?: Boolean;
+  room_burn: boolean;
+  room_occupants: (ObjectId | string)[];
+  room_whitelist: boolean;
 
-  room_created_by: ObjectId;
+  room_created_by: ObjectId | string;
   room_sessions: Date[];
 
   burn_date?: Date;
-  burn_after?: Number;
+  burn_after?: number;
 }
 
 export interface IUser {
   _id: ObjectId;
 
-  uuid: String;
-  username: String;
-  password: String;
-  email?: String;
+  uuid: string;
+  username: string;
+  password: string;
+  email?: string;
 
-  is_verified: Boolean;
-  is_blacklisted: Boolean;
+  is_verified: boolean;
+  is_blacklisted: boolean;
+
+  createdAt: Date;
 }

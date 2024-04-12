@@ -1,6 +1,3 @@
-import { IUser } from '@common/interfaces';
-import { HTTP_STATUS } from '@common/types';
-import { client } from '@libs/redis';
 import errorHandler from '@plugins/errorHandler';
 import { createUserSchema } from '@schemas/user.schema';
 import userService from '@services/user.service';
@@ -23,19 +20,11 @@ export default new Elysia({ prefix: PATH })
     })
   )
   .post(
-    '',
+    '/',
     async ({ body, set }) => {
-      // const result = await userService.create(body as Partial<IUser>);
-      const data = body as Partial<IUser>;
-      const isExist = await userService.findOne('', { username: data.username });
+      const result = await userService.create(body);
 
-      if (!isExist) {
-        client.SETEX('ss', 86400, JSON.stringify(data));
-      }
-
-      set.status = HTTP_STATUS.CREATED;
-
-      return data;
+      return result;
     },
     createUserSchema
   );

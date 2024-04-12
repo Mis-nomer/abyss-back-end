@@ -1,16 +1,11 @@
 import { IUser } from '@common/interfaces';
-import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE, HTTP_STATUS } from '@common/types';
+import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE } from '@common/types';
 import userModel from '@models/user.model';
 
+type IUserSubmit = Pick<IUser, 'uuid' | 'username'>;
+
 export default {
-  create: async (data: Partial<IUser>): Promise<HTTP_RESPONSE> => {
-    if (data.username) {
-      data.uuid = data.username.valueOf();
-    }
-
-    const newUser = new userModel(data);
-
-    // Duplicate Check
+  create: async (data: IUserSubmit): Promise<HTTP_RESPONSE> => {
     const isFound = await userModel.findOne({
       uuid: data.uuid,
     });
@@ -18,6 +13,8 @@ export default {
     if (isFound) {
       throw new HTTP_ERROR('DUPLICATE');
     }
+
+    const newUser = new userModel({ ...data, is_blacklisted: false, is_verified: false });
 
     const result = await newUser.save();
 

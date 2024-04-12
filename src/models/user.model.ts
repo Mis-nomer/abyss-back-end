@@ -8,7 +8,7 @@ const UserSchema = new Schema<IUser, Model<IUser>>({
   password: {
     type: String,
     required: function () {
-      return Boolean(this.is_verified);
+      return this.is_verified;
     },
   },
   email: { type: String, unique: true },
@@ -16,6 +16,8 @@ const UserSchema = new Schema<IUser, Model<IUser>>({
   is_verified: { type: Boolean, default: false },
 
   is_blacklisted: { type: Boolean, default: false },
+
+  createdAt: { type: Date, default: Date.now, expires: '1m' },
 });
 
 export default model('User', UserSchema);

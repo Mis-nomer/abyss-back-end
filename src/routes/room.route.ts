@@ -1,4 +1,3 @@
-import { IRoom } from '@common/interfaces';
 import { HTTP_CODE, HTTP_STATUS } from '@common/types';
 import errorHandler from '@plugins/errorHandler';
 import { createRoomSchema } from '@schemas/room.schema';
@@ -13,7 +12,7 @@ export default new Elysia({ prefix: PATH })
   .post(
     '',
     async ({ body, set }) => {
-      const result = await roomService.create(body as Partial<IRoom>);
+      const result = await roomService.create(body);
 
       switch (result.code) {
         case HTTP_CODE.INTERNAL_SERVER_ERROR:

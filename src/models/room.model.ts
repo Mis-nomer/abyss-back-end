@@ -8,7 +8,7 @@ const RoomSchema = new Schema<IRoom, Model<IRoom>>(
     room_key: {
       type: String,
       required: function () {
-        return Boolean(this.room_private);
+        return this.room_private;
       },
     },
     room_type: { type: String, enum: RoomTypeEnum, required: true, default: RoomTypeEnum.PAIR },
@@ -24,13 +24,13 @@ const RoomSchema = new Schema<IRoom, Model<IRoom>>(
     burn_after: {
       type: Number,
       required: function () {
-        return Boolean(this.room_burn);
+        return this.room_burn;
       },
     },
     burn_date: {
       type: Date,
       required: function () {
-        return Boolean(this.room_burn);
+        return this.room_burn;
       },
     },
   },

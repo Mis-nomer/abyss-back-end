@@ -1,13 +1,13 @@
 'use strict';
 
-import connectDatabase from '@libs/database';
+import connectMongoDB from '@libs/database';
 import filepath from '@libs/filepath';
 import logger from '@libs/logger';
 import { Elysia, t } from 'elysia';
 
 import cors from '@elysiajs/cors';
 
-console.log(process.env.NODE_ENV, typeof process.env.ROARR_LOG);
+const PATH = filepath(import.meta.url, 'server.ts');
 
 const app = new Elysia({ prefix: '/api' + process.env.PREFIX_VERSION })
   .use(
@@ -24,15 +24,15 @@ const app = new Elysia({ prefix: '/api' + process.env.PREFIX_VERSION })
       ws.send(message);
     },
     open(ws) {
-      logger.info(`[${filepath(import.meta.url)}] - ${ws.data}`);
+      logger.info(`[${PATH}] - ${ws.data}`);
     },
   })
   .listen(process.env.SERVER_PORT ?? 3000);
 
-connectDatabase();
+connectMongoDB();
 
 logger.info(
-  `[${filepath(import.meta.url)}] - 🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
+  `[${PATH}] - 🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
 );
 
 export { app };

@@ -1,9 +1,8 @@
 import { t } from 'elysia';
-import type { InputSchema } from 'elysia';
 
 import { genericResponse } from '.';
 
-export const createUserSchema: InputSchema<never> = {
+export const createUserSchema = {
   body: t.Object({
     username: t.String(),
     uuid: t.String(),
