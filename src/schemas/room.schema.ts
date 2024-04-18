@@ -1,17 +1,18 @@
 import { RoomTypeEnum } from '@common/enums';
 import { t } from 'elysia';
+import { ObjectId } from 'mongoose';
 
 import { genericResponse } from '.';
 
 export const createRoomSchema = {
   body: t.Object({
-    room_name: t.String(),
-    room_private: t.Boolean(),
-    room_type: t.Enum(RoomTypeEnum),
+    name: t.String(),
+    private: t.Boolean(),
+    type: t.Enum(RoomTypeEnum),
     // If set to false, room will not be deleted.
-    room_burn: t.Boolean(),
-    room_key: t.Optional(t.String({})),
-    room_created_by: t.String(),
+    burn: t.Boolean(),
+    key: t.Optional(t.String({})),
+    created_by: t.String(),
 
     // Delete room after N times. 0 for default.
     burn_after: t.Optional(
@@ -21,7 +22,7 @@ export const createRoomSchema = {
     ),
 
     // Delete room after specified date. Supersede burn_after
-    burn_date: t.Optional(t.Date()),
+    burn_at: t.Optional(t.Date()),
   }),
   response: genericResponse,
 };

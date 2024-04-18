@@ -1,36 +1,50 @@
 import { ObjectId } from 'mongoose';
 
-import { RoomTypeEnum } from './enums';
+import { MessageFlagENum, RoomTypeEnum } from './enums';
 
 export interface IRoom {
   _id: ObjectId;
 
-  room_name: string;
+  name: string;
   room_key?: string;
-  room_type: RoomTypeEnum;
-  room_private: boolean;
+  type: RoomTypeEnum;
+  private: boolean;
 
-  room_burn: boolean;
-  room_occupants: (ObjectId | string)[];
-  room_whitelist: boolean;
+  burn: boolean;
+  users: string[];
+  whitelist: boolean;
 
-  room_created_by: ObjectId | string;
-  room_sessions: Date[];
+  created_by: ObjectId;
+  created_at: Date;
+  sessions: Date[];
+  max_users: Number;
 
-  burn_date?: Date;
+  burn_at?: Date;
   burn_after?: number;
 }
 
 export interface IUser {
   _id: ObjectId;
 
-  uuid: string;
+  fingerprint: string;
   username: string;
   password: string;
   email?: string;
 
   is_verified: boolean;
   is_blacklisted: boolean;
+  is_admin: boolean;
 
-  createdAt: Date;
+  created_at: Date;
+  delete_at: Date;
+}
+
+export interface IMessage {
+  _id: ObjectId;
+  content: string;
+  flags: MessageFlagENum[];
+  is_delivered: boolean;
+  sent_by: ObjectId;
+  room: ObjectId;
+  created_at: Date;
 }

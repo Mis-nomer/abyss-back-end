@@ -21,3 +21,11 @@ export enum LoggerColorEnum {
   ERROR = 'red',
   FATAL = 'purple',
 }
+
+export enum MessageFlagENum {
+  FILE = 'file',
+  COMMAND = 'command',
+  LINK = 'link',
+  IMAGE = 'image',
+  DECORATE = 'decorate',
+}

@@ -21,6 +21,7 @@ const handleCustomError = (error: HTTP_ERROR) => {
         code: HTTP_CODE[error.code],
         message: error.message || HTTP_MESSAGE.AUTH.DUPLICATE,
       };
+    case 'FORBIDDEN':
     case 'RESTRICT_NOT_VERIFIED':
       return {
         status: HTTP_STATUS.FORBIDDEN,

@@ -1,14 +1,10 @@
-import { IUser } from '@common/interfaces';
 import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE } from '@common/types';
 import userModel from '@models/user.model';
+import { omit } from 'remeda';
 
-type IUserSubmit = Pick<IUser, 'uuid' | 'username'>;
-
-export default {
-  create: async (data: IUserSubmit): Promise<HTTP_RESPONSE> => {
-    const isFound = await userModel.findOne({
-      uuid: data.uuid,
-    });
+class UserService {
+  async create(data): Promise<HTTP_RESPONSE> {
+    const isFound = await this.findOne({ fingerprint: data.fingerprint });
 
     if (isFound) {
       throw new HTTP_ERROR('DUPLICATE');
@@ -23,17 +19,22 @@ export default {
     }
 
     return {
-      data: result,
+      data: omit(result.toObject(), ['password', 'created_at', '_id']),
       code: HTTP_CODE.REGISTER_SUCCESS,
       message: HTTP_MESSAGE.CREATE_SUCCESS,
     };
-  },
-  findOne: async (id: string, other?: Record<string, unknown>) => {
-    if (id) {
-      return await userModel.findById(id);
-    } else return await userModel.findOne(other);
-  },
-  routineDelete: async () => {
+  }
+
+  //Default to find by ID if pass in a string
+  async findOne(field: string | Record<string, unknown>) {
+    return typeof field === 'string'
+      ? await userModel.findById(field)
+      : await userModel.findOne(field);
+  }
+
+  async routineDelete() {
     return await userModel.deleteMany({ is_verified: false });
-  },
-};
+  }
+}
+
+export default new UserService();

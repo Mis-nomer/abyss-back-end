@@ -2,60 +2,49 @@ import { RoomTypeEnum } from '@common/enums';
 import { IRoom } from '@common/interfaces';
 import { Model, Schema, model } from 'mongoose';
 
-const RoomSchema = new Schema<IRoom, Model<IRoom>>(
-  {
-    room_name: { type: String, trim: true, maxlength: 100 },
-    room_key: {
-      type: String,
-      required: function () {
-        return this.room_private;
-      },
-    },
-    room_type: { type: String, enum: RoomTypeEnum, required: true, default: RoomTypeEnum.PAIR },
-    room_private: { type: Boolean, required: true, default: true },
-
-    room_burn: { type: Boolean, required: true },
-    room_occupants: { type: [Schema.Types.ObjectId], ref: 'User' },
-    room_whitelist: { type: Boolean, required: true, default: true },
-
-    room_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-    room_sessions: { type: [Date] },
-
-    burn_after: {
-      type: Number,
-      required: function () {
-        return this.room_burn;
-      },
-    },
-    burn_date: {
-      type: Date,
-      required: function () {
-        return this.room_burn;
-      },
+const RoomSchema = new Schema<IRoom, Model<IRoom>>({
+  name: { type: String, trim: true, maxlength: 100 },
+  room_key: {
+    type: String,
+    required: function () {
+      return this.private;
     },
   },
-  {
-    timestamps: true,
-  }
-);
+  type: { type: String, enum: RoomTypeEnum, required: true, default: RoomTypeEnum.PAIR },
+  private: { type: Boolean, required: true, default: true },
+
+  burn: { type: Boolean, required: true },
+  users: { type: [String] },
+  whitelist: { type: Boolean, required: true, default: true },
+  max_users: { type: Number, default: 2 },
+  created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+  created_at: { type: Date, default: Date.now },
+  sessions: { type: [Date] },
+
+  burn_after: {
+    type: Number,
+    required: function () {
+      return this.burn;
+    },
+  },
+  burn_at: {
+    type: Date,
+    required: function () {
+      return this.burn;
+    },
+  },
+});
 
 RoomSchema.index(
-  { createdAt: 1 },
+  { created_at: 1 },
   {
     expires: 30,
     partialFilterExpression: {
-      room_burn: true,
-      $expr: { $eq: [{ $size: '$room_sessions' }, '$burn_after'] },
+      burn: true,
+      $expr: { $eq: [{ $size: '$sessions' }, '$burn_after'] },
     },
   }
 );
-
-RoomSchema.pre('save', async function (next) {
-  this.room_occupants.push(this.room_created_by);
-  this.room_sessions.push(new Date());
-
-  next();
-});
 
 const RoomModel = model('Room', RoomSchema);
 

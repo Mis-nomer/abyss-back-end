@@ -4,10 +4,11 @@ import connectMongoDB from '@libs/database';
 import filepath from '@libs/filepath';
 import logger from '@libs/logger';
 import { Elysia, t } from 'elysia';
-
 import cors from '@elysiajs/cors';
 
 const PATH = filepath(import.meta.url, 'server.ts');
+
+console.log('/api' + process.env.PREFIX_VERSION );
 
 const app = new Elysia({ prefix: '/api' + process.env.PREFIX_VERSION })
   .use(
@@ -29,7 +30,9 @@ const app = new Elysia({ prefix: '/api' + process.env.PREFIX_VERSION })
   })
   .listen(process.env.SERVER_PORT ?? 3000);
 
-connectMongoDB();
+connectMongoDB()
+
+logger.info(`[${PATH}] - Server running on ${process.env.NODE_ENV}`)
 
 logger.info(
   `[${PATH}] - 🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`

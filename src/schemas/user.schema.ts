@@ -5,7 +5,7 @@ import { genericResponse } from '.';
 export const createUserSchema = {
   body: t.Object({
     username: t.String(),
-    uuid: t.String(),
+    fingerprint: t.String(),
   }),
   response: genericResponse,
 };
