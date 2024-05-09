@@ -3,7 +3,6 @@ import errorHandler from '@plugins/errorHandler';
 import { createRoomSchema } from '@schemas/room.schema';
 import roomService from '@services/room.service';
 import Elysia from 'elysia';
-import { Types } from 'mongoose';
 
 const PATH = '/room';
 

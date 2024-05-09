@@ -1,5 +1,6 @@
 import { HTTP_CODE, HTTP_ERROR, HTTP_MESSAGE, HTTP_RESPONSE } from '@common/types';
 import userModel from '@models/user.model';
+import { ObjectId } from 'mongoose';
 import { omit } from 'remeda';
 
 class UserService {
@@ -26,7 +27,7 @@ class UserService {
   }
 
   //Default to find by ID if pass in a string
-  async findOne(field: string | Record<string, unknown>) {
+  async findOne(field: string | ObjectId | Record<string, unknown>) {
     return typeof field === 'string'
       ? await userModel.findById(field)
       : await userModel.findOne(field);

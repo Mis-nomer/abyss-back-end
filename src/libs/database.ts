@@ -7,9 +7,9 @@ const PATH = filepath(import.meta.url, 'libs/database.ts');
 
 const connectMongoDB = async () => {
   try {
-    if (!process.env.MONGODB_URL) throw new Error('No MongoDB URL found');
+    if (!Bun.env.MONGODB_URL) throw new Error('No MongoDB URL found');
 
-    await mongoose.connect(process.env.MONGODB_URL);
+    await mongoose.connect(Bun.env.MONGODB_URL);
 
     logger.info(`[${PATH}] - Successfully connected to MongoDB`);
   } catch (error) {
@@ -17,4 +17,4 @@ const connectMongoDB = async () => {
   }
 };
 
-export default connectMongoDB
+export default connectMongoDB;

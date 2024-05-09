@@ -2,9 +2,13 @@ import { ObjectId } from 'mongoose';
 
 import { MessageFlagENum, RoomTypeEnum } from './enums';
 
-export interface IRoom {
+export interface IRootSchema {
   _id: ObjectId;
+  created_at: Date;
+  updated_at: Date;
+}
 
+export interface IRoom extends IRootSchema {
   name: string;
   room_key?: string;
   type: RoomTypeEnum;
@@ -14,8 +18,7 @@ export interface IRoom {
   users: string[];
   whitelist: boolean;
 
-  created_by: ObjectId;
-  created_at: Date;
+  created_by: string | ObjectId;
   sessions: Date[];
   max_users: Number;
 
@@ -23,9 +26,7 @@ export interface IRoom {
   burn_after?: number;
 }
 
-export interface IUser {
-  _id: ObjectId;
-
+export interface IUser extends IRootSchema {
   fingerprint: string;
   username: string;
   password: string;
@@ -35,16 +36,13 @@ export interface IUser {
   is_blacklisted: boolean;
   is_admin: boolean;
 
-  created_at: Date;
-  delete_at: Date;
+  deleted_at: Date;
 }
 
-export interface IMessage {
-  _id: ObjectId;
+export interface IMessage extends IRootSchema {
   content: string;
   flags: MessageFlagENum[];
   is_delivered: boolean;
-  sent_by: ObjectId;
-  room: ObjectId;
-  created_at: Date;
+  sent_by: string | ObjectId;
+  room: string | ObjectId;
 }

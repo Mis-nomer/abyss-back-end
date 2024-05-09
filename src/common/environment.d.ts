@@ -8,7 +8,6 @@ declare module 'bun' {
     REDIS_HOST: string;
     REDIS_PORT: number;
 
-    ROARR_LOG: boolean;
     PREFIX_VERSION: string;
 
     NODE_ENV: string;
@@ -26,7 +25,6 @@ declare global {
       REDIS_HOST: string;
       REDIS_PORT: number;
 
-      ROARR_LOG: boolean;
       PREFIX_VERSION: string;
 
       NODE_ENV: string;

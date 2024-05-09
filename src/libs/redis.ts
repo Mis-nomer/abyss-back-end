@@ -6,10 +6,10 @@ import logger from './logger';
 const PATH = filepath(import.meta.url, 'libs/redis.ts');
 
 export const client = redis.createClient({
-  password: process.env.REDIS_PASSWORD,
+  password: Bun.env.REDIS_PASSWORD,
   socket: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
+    host: Bun.env.REDIS_HOST,
+    port: Bun.env.REDIS_PORT,
   },
 });
 
