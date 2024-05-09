@@ -1,6 +1,6 @@
 {
   "name": "abyss-back-end",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A privacy-first messaging application",
   "main": "src/server.ts",
   "scripts": {
