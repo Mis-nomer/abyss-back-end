@@ -1,6 +1,6 @@
 export enum RoomTypeEnum {
-  PAIR = 'pair',
-  GROUP = 'group',
+  TEMP = 'temp', // Rooms that restricted to 2 users. Have
+  SOLID = 'solid',
   ECHO = 'echo',
 }
 
@@ -22,7 +22,7 @@ export enum LoggerColorEnum {
   FATAL = 'purple',
 }
 
-export enum MessageFlagENum {
+export enum MessageFlagEnum {
   FILE = 'file',
   COMMAND = 'command',
   LINK = 'link',

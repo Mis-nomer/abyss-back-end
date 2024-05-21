@@ -3,9 +3,9 @@ import userModel from '@models/user.model';
 import { ObjectId } from 'mongoose';
 import { omit } from 'remeda';
 
-class UserService {
-  async create(data): Promise<HTTP_RESPONSE> {
-    const isFound = await this.findOne({ fingerprint: data.fingerprint });
+export default {
+  create: async (data): Promise<HTTP_RESPONSE> => {
+    const isFound = await userModel.findOne({ fingerprint: data.fingerprint });
 
     if (isFound) {
       throw new HTTP_ERROR('DUPLICATE');
@@ -24,18 +24,16 @@ class UserService {
       code: HTTP_CODE.REGISTER_SUCCESS,
       message: HTTP_MESSAGE.CREATE_SUCCESS,
     };
-  }
+  },
 
   //Default to find by ID if pass in a string
-  async findOne(field: string | ObjectId | Record<string, unknown>) {
+  findOne: async (field: string | ObjectId | Record<string, unknown>) => {
     return typeof field === 'string'
       ? await userModel.findById(field)
       : await userModel.findOne(field);
-  }
+  },
 
-  async routineDelete() {
+  routineDelete: async () => {
     return await userModel.deleteMany({ is_verified: false });
-  }
-}
-
-export default new UserService();
+  },
+};

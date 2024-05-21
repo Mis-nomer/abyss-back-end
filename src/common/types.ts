@@ -54,6 +54,7 @@ export const HTTP_MESSAGE = {
 
   ROOM: {
     RESTRICT_NOT_VERIFIED: 'A non-verified user cannot create more than 3 rooms',
+    RESTRICT_MAXIMUM_USER_PER_ROOM: 'The current room has reached maximum allowed users!',
   },
 };
 
@@ -80,6 +81,7 @@ export const HTTP_CODE = {
   INVALID_COOKIE_SIGNATURE: 10029,
   CREATE_FAIL: 10030,
   CREATED: 10031,
+  RESTRICT_MAXIMUM_USER_PER_ROOM: 10032,
 };
 
 export interface HTTP_RESPONSE {
@@ -96,3 +98,9 @@ export class HTTP_ERROR extends Error {
     this.code = code;
   }
 }
+
+export const punish = {
+  spamRoom: -15,
+  inactive: -5,
+  spamChat: -1,
+};

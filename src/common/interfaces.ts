@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongoose';
 
-import { MessageFlagENum, RoomTypeEnum } from './enums';
+import { MessageFlagEnum, RoomTypeEnum } from './enums';
 
 export interface IRootSchema {
   _id: ObjectId;
@@ -41,7 +41,7 @@ export interface IUser extends IRootSchema {
 
 export interface IMessage extends IRootSchema {
   content: string;
-  flags: MessageFlagENum[];
+  flags: MessageFlagEnum[];
   is_delivered: boolean;
   sent_by: string | ObjectId;
   room: string | ObjectId;

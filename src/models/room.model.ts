@@ -11,7 +11,7 @@ const RoomSchema = new Schema<IRoom, Model<IRoom>>(
         return this.private;
       },
     },
-    type: { type: String, enum: RoomTypeEnum, required: true, default: RoomTypeEnum.PAIR },
+    type: { type: String, enum: RoomTypeEnum, required: true, default: RoomTypeEnum.TEMP },
     private: { type: Boolean, required: true, default: true },
 
     burn: { type: Boolean, required: true },

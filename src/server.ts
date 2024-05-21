@@ -10,6 +10,7 @@ import cors from '@elysiajs/cors';
 const PATH = filepath(import.meta.url, 'server.ts');
 
 const app = new Elysia({ prefix: '/api/' + Bun.env.PREFIX_VERSION })
+  .state({ user: { isVerified: false, isBanned: false } })
   .use(
     cors({
       origin: true,
@@ -18,13 +19,17 @@ const app = new Elysia({ prefix: '/api/' + Bun.env.PREFIX_VERSION })
   .use(import('@routes/room.route'))
   .use(import('@routes/user.route'))
   .ws('/chat', {
-    body: t.String(),
-    response: t.String(),
+    body: t.Any(),
+    // response: t.String(),
     message(ws, message) {
-      ws.send(message);
+      if (typeof message === 'string') {
+        logger.error(
+          `[${PATH}] - Bad message format. Tried to parse "${message.substring(0, 60)}" ${message.length > 60 ? '...' : ''}`
+        );
+      }
     },
     open(ws) {
-      logger.info(`[${PATH}] - ${ws.data}`);
+      // logger.info(`[${PATH}] - ${ws.data}`);
     },
   })
   .listen(Bun.env.SERVER_PORT ?? 3000);
