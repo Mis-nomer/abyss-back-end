@@ -29,3 +29,8 @@ export enum MessageFlagEnum {
   IMAGE = 'image',
   DECORATE = 'decorate',
 }
+
+export enum roomActionEnum {
+  JOIN = 'join',
+  MESSAGE = 'message',
+}

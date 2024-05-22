@@ -67,7 +67,7 @@ export default {
     if (!user) throw new HTTP_ERROR('NOT_FOUND', 'User not found');
 
     if (room.type === RoomTypeEnum.TEMP) {
-      if (room.users.length <= 1) {
+      if (room.users.length <= 1 && !room.users.includes(user_id)) {
         room.users.push(user_id);
       } else if (room.users.length === 2) {
         room.sessions.push(new Date());
