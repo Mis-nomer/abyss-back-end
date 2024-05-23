@@ -12,7 +12,9 @@ const UserSchema = new Schema<IUser, Model<IUser>>(
         return this.is_verified;
       },
     },
-    email: { type: String, unique: true },
+    email: {
+      type: String,
+    },
 
     is_verified: { type: Boolean, default: false },
 
@@ -20,11 +22,16 @@ const UserSchema = new Schema<IUser, Model<IUser>>(
 
     is_admin: { type: Boolean, default: false },
 
-    deleted_at: { type: Date, expires: '24h' },
+    rooms: { type: [Schema.Types.ObjectId], ref: 'room' },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   }
+);
+
+UserSchema.index(
+  { email: 1 },
+  { unique: true, partialFilterExpression: { is_verified: { $eq: true } } }
 );
 
 export default model('User', UserSchema);

@@ -10,7 +10,6 @@ import cors from '@elysiajs/cors';
 const PATH = filepath(import.meta.url, 'server.ts');
 
 const app = new Elysia({ prefix: '/api/' + Bun.env.PREFIX_VERSION })
-  .state({ activeRooms: [] })
   .use(
     cors({
       origin: true,

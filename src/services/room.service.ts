@@ -59,29 +59,6 @@ export default {
       data: { _id: saveResult._id, name: saveResult.name },
     };
   },
-  join: async (room_id: string, user_id: string) => {
-    const room = await roomModel.findById(room_id);
-    const user = await userModel.findById(user_id);
-
-    if (!room) throw new HTTP_ERROR('NOT_FOUND', 'Room not found');
-    if (!user) throw new HTTP_ERROR('NOT_FOUND', 'User not found');
-
-    if (room.type === RoomTypeEnum.TEMP) {
-      if (room.users.length <= 1 && !room.users.includes(user_id)) {
-        room.users.push(user_id);
-      } else if (room.users.length === 2) {
-        room.sessions.push(new Date());
-        room.burn_at = DateTime.now().plus({ days: 1 }).toJSDate();
-      } else throw new HTTP_ERROR('RESTRICT_MAXIMUM_USER_PER_ROOM');
-    }
-
-    await roomModel.findByIdAndUpdate(room_id, room);
-
-    return {
-      code: HTTP_CODE.SUCCESS,
-      message: 'Room joined',
-    };
-  },
   routineDelete: async () => {
     return await roomModel.deleteMany({
       $or: [{ burn_at: { $lte: DateTime.now().toJSDate() } }, { burn_after: { $gte: 3 } }],

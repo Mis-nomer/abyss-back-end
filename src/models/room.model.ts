@@ -15,7 +15,6 @@ const RoomSchema = new Schema<IRoom, Model<IRoom>>(
     private: { type: Boolean, required: true, default: true },
 
     burn: { type: Boolean, required: true },
-    users: { type: [String] },
     whitelist: { type: Boolean, required: true, default: true },
     max_users: { type: Number, default: 2 },
     created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
@@ -38,17 +37,6 @@ const RoomSchema = new Schema<IRoom, Model<IRoom>>(
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   }
 );
-
-// RoomSchema.index(
-//   { created_at: 1 },
-//   {
-//     expires: '$burn_after',
-//     partialFilterExpression: {
-//       burn: true,
-//       $expr: { $eq: [{ $size: '$sessions' }, '$burn_after'] },
-//     },
-//   }
-// );
 
 const RoomModel = model('Room', RoomSchema);
 

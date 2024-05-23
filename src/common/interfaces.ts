@@ -15,7 +15,6 @@ export interface IRoom extends IRootSchema {
   private: boolean;
 
   burn: boolean;
-  users: string[];
   whitelist: boolean;
 
   created_by: string | ObjectId;
@@ -35,6 +34,8 @@ export interface IUser extends IRootSchema {
   is_verified: boolean;
   is_blacklisted: boolean;
   is_admin: boolean;
+
+  rooms: string | ObjectId[];
 
   deleted_at: Date;
 }

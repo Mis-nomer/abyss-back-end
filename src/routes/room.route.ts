@@ -1,4 +1,4 @@
-import { HTTP_CODE, HTTP_MESSAGE, HTTP_STATUS } from '@common/types';
+import { HTTP_CODE, HTTP_MESSAGE, HTTP_RESPONSE, HTTP_STATUS } from '@common/types';
 import filepath from '@libs/filepath';
 import logger from '@libs/logger';
 import errorHandler from '@plugins/errorHandler';
@@ -13,7 +13,7 @@ const PATH = filepath(import.meta.url, 'room.route.ts');
 export default new Elysia()
   .use(errorHandler())
   .onError(({ errorHandler, ...ctx }) => errorHandler(ctx))
-  .state({ activeRooms: [] })
+  .state({ activeRooms: new Map() })
   .use(
     cron({
       name: 'routine',
@@ -54,7 +54,6 @@ export default new Elysia()
         );
         ws.close();
       }
-      // console.log(message.content.message);
     },
     async open(ws) {
       const {
@@ -63,54 +62,35 @@ export default new Elysia()
         cookie: { user_id },
       } = ws.data;
 
-      if (!room) {
-        ws.send({
-          code: HTTP_CODE.BAD_REQUEST,
-          message: 'Missing room ID!',
-        });
+      if (activeRooms.has(room)) {
+        const occupants = activeRooms.get(room);
 
-        ws.close();
-        return;
+        if (occupants.includes(user_id.value)) {
+          ws.send({ code: HTTP_CODE.FORBIDDEN, message: 'Room already joined' });
+          ws.close();
+          return;
+        }
+        activeRooms.set(room, [...occupants, user_id.value]);
+      } else {
+        activeRooms.set(room, [user_id.value]);
       }
-
-      if (!user_id.value) {
-        ws.send({
-          code: HTTP_CODE.INVALID_COOKIE_SIGNATURE,
-          message: HTTP_MESSAGE.INVALID_COOKIE_SIGNATURE,
-        });
-
-        ws.close();
-        return;
-      }
-      try {
-        const joinStatus = await roomService.join(room, user_id.value);
-
-        logger.info(joinStatus.message);
-      } catch (error) {
-        logger.error(`[${PATH}] - ${(error as Error).message}`);
-      }
+      ws.send({ code: HTTP_CODE.SUCCESS, message: 'Room joined' });
+      console.log(activeRooms);
     },
-    close() {
-      console.log('Scram');
+
+    async close(ws) {
+      const {
+        store: { activeRooms },
+        query: { room },
+        cookie: { user_id },
+      } = ws.data;
+
+      const newOccupants = activeRooms.get(room).filter((id) => id !== user_id.value);
+
+      if (newOccupants.length) {
+        activeRooms.set(room, newOccupants);
+      } else activeRooms.delete(room);
+
+      console.log(activeRooms);
     },
   });
-
-// .post(
-//   '/join/:room_id',
-//   async ({ params, body, set }) => {
-//     const result = await roomService.join(params.room_id, body.user_id);
-
-//     switch (result.code) {
-//       case HTTP_CODE.INTERNAL_SERVER_ERROR:
-//         set.status = HTTP_STATUS.INTERNAL_SERVER_ERROR;
-//         break;
-//       case HTTP_CODE.RESTRICT_NOT_VERIFIED:
-//         set.status = HTTP_CODE.BAD_REQUEST;
-//       default:
-//         set.status = HTTP_STATUS.CREATED;
-//         break;
-//     }
-//     return result;
-//   },
-//   joinRoomSchema
-// );

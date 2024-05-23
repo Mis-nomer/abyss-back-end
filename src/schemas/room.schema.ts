@@ -14,6 +14,7 @@ export const createRoomSchema = {
 };
 
 export const joinRoomSchema = {
+  activeRooms: t.Array(t.Record(t.String(), t.Unknown())),
   cookie: t.Cookie({
     user_id: t.String(),
   }),
