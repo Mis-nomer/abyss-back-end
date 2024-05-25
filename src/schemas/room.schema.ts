@@ -19,14 +19,8 @@ export const joinRoomSchema = {
     user_id: t.String(),
   }),
   query: t.Object({
-    room: t.String(),
+    id: t.String(),
   }),
-  message: t.Union([
-    t.Object({
-      type: t.Enum(roomActionEnum),
-      content: t.String(),
-    }),
-    t.String(),
-  ]),
+
   response: genericResponse,
 };

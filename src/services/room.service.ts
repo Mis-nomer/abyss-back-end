@@ -33,7 +33,7 @@ export default {
       }
 
       roomData.burn = true;
-      roomData.burn_at = DateTime.now().plus({ minutes: 20 }).toJSDate();
+      roomData.burn_at = DateTime.now().plus({ days: 1 }).toJSDate();
       roomData.max_users = 2;
       roomData.type = RoomTypeEnum.TEMP;
     }
@@ -57,6 +57,17 @@ export default {
       code: HTTP_CODE.CREATED,
       message: HTTP_MESSAGE.CREATE_SUCCESS,
       data: { _id: saveResult._id, name: saveResult.name },
+    };
+  },
+  get: async (id: string) => {
+    const room = await roomModel.findById(id);
+
+    if (!room) throw new HTTP_ERROR('NOT_FOUND');
+
+    return {
+      code: HTTP_CODE.SUCCESS,
+      message: HTTP_MESSAGE.SUCCESS,
+      data: room,
     };
   },
   routineDelete: async () => {

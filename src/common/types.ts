@@ -84,10 +84,16 @@ export const HTTP_CODE = {
   RESTRICT_MAXIMUM_USER_PER_ROOM: 10032,
 };
 
-export interface HTTP_RESPONSE {
-  message: string | string[];
+export class HTTP_RESPONSE {
   code: string | number;
+  message: string | string[];
   data?: any;
+
+  constructor(code, message, data?) {
+    this.code = code;
+    this.message = message || HTTP_MESSAGE[code];
+    if (data) this.data = data;
+  }
 }
 
 export class HTTP_ERROR extends Error {
