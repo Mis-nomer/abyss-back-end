@@ -12,35 +12,19 @@ const handleValidationError = (error) => {
   };
 };
 
-const handleCustomError = (error: HTTP_ERROR) => {
-  switch (error.code) {
-    case 'CREATE_FAIL':
-    case 'DUPLICATE':
-      return {
-        status: HTTP_STATUS.BAD_REQUEST,
-        code: HTTP_CODE[error.code],
-        message: error.message || HTTP_MESSAGE.AUTH.DUPLICATE,
-      };
-    case 'FORBIDDEN':
-    case 'RESTRICT_NOT_VERIFIED':
-      return {
-        status: HTTP_STATUS.FORBIDDEN,
-        code: HTTP_CODE[error.code],
-        message: error.message || HTTP_MESSAGE.ROOM.RESTRICT_NOT_VERIFIED,
-      };
-    case 'NOT_VERIFIED':
-      return {
-        status: HTTP_STATUS.FORBIDDEN,
-        code: HTTP_CODE[error.code],
-        message: error.message || HTTP_MESSAGE.AUTH.NOT_VERIFIED,
-      };
-    default:
-      return {
-        status: HTTP_STATUS.UNKNOWN,
-        code: HTTP_CODE.UNKNOWN,
-        message: HTTP_MESSAGE.UNKNOWN,
-      };
-  }
+const customErrorMessages = {
+  CREATE_FAIL: HTTP_MESSAGE.CREATE_FAIL,
+  DUPLICATE: HTTP_MESSAGE.AUTH.DUPLICATE,
+  FORBIDDEN: HTTP_MESSAGE.FORBIDDEN,
+  RESTRICT_NOT_VERIFIED: HTTP_MESSAGE.ROOM.RESTRICT_NOT_VERIFIED,
+  NOT_VERIFIED: HTTP_MESSAGE.AUTH.NOT_VERIFIED,
+};
+
+const handleCustomError = (error: HTTP_ERROR): HTTP_RESPONSE => {
+  const message = error.message || customErrorMessages[error.code] || HTTP_MESSAGE.UNKNOWN;
+  const code = HTTP_CODE[error.code] || HTTP_CODE.UNKNOWN;
+
+  return { code, message };
 };
 
 const errorHandler: ErrorHandler<{ readonly HTTP_ERROR: HTTP_ERROR }> = ({
@@ -48,36 +32,19 @@ const errorHandler: ErrorHandler<{ readonly HTTP_ERROR: HTTP_ERROR }> = ({
   error,
   set,
 }): HTTP_RESPONSE => {
-  switch (code) {
-    case 'VALIDATION':
-      set.status = HTTP_STATUS.BAD_REQUEST;
-      return handleValidationError(error);
-
-    case 'INTERNAL_SERVER_ERROR':
-    case 'NOT_FOUND':
-    case 'PARSE':
-      set.status = HTTP_STATUS[code];
-
-      return {
-        code: HTTP_CODE[code],
-        message: HTTP_MESSAGE[code],
-      };
-    case 'INVALID_COOKIE_SIGNATURE':
-      set.status = HTTP_CODE.BAD_REQUEST;
-
-      return {
-        code: HTTP_CODE.INVALID_COOKIE_SIGNATURE,
-        message: HTTP_MESSAGE.INVALID_COOKIE_SIGNATURE,
-      };
-    default:
-      const { status, code: customCode, message } = handleCustomError(error as HTTP_ERROR);
-      set.status = status;
-
-      return {
-        code: customCode,
-        message,
-      };
+  if (code in HTTP_STATUS) {
+    set.status = HTTP_STATUS[code];
+  } else {
+    set.status = HTTP_CODE.UNKNOWN;
   }
+
+  if (code === 'VALIDATION') {
+    return handleValidationError(error);
+  }
+
+  const { code: customCode, message } = handleCustomError(error as HTTP_ERROR);
+
+  return { code: customCode, message };
 };
 
 export default () => new Elysia().error({ HTTP_ERROR }).decorate('errorHandler', errorHandler);
